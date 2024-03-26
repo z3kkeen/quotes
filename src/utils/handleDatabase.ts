@@ -1,13 +1,14 @@
 import { db } from './db';
 
 export async function getData() {
-    const data = await db.query('SELECT * FROM quotes');
+    const data = await db.query('SELECT * FROM projects');
     return data.rows
 }
 
-export async function saveData(author:string, quote:string) {
+export async function saveData(name:string, timespent:number) {
+    timespent = timespent * 3600;
     try{
-        await db.query('INSERT INTO quotes(author, quote) VALUES ($1, $2)', [author, quote]);
+        await db.query('INSERT INTO projects(name, timespent) VALUES ($1, $2)', [name, timespent]);
         return 'Saved successfully!';
         
     } catch (error) {
@@ -16,9 +17,9 @@ export async function saveData(author:string, quote:string) {
     }
 }
 
-export async function updateData(id:string, author:string, quote:string) {
+export async function updateData(id:number, name:string, timespent:number) {
     try{
-        await db.query('UPDATE quotes SET author = $1, quote = $2 WHERE id = $3', [author, quote, id])
+        await db.query('UPDATE projects SET name = $1, timespent = $2 WHERE id = $3', [name, timespent, id])
         return 'Quote has been updated.'
     } catch (error) {
         console.log('error:' + error);
@@ -30,8 +31,8 @@ export async function deleteData(id:string) {
     try{
         console.log(id);
         
-        await db.query('DELETE FROM quotes WHERE id = $1', [id])
-        return 'Quote has been deleted'
+        await db.query('DELETE FROM projects WHERE id = $1', [id])
+        return 'Project has been deleted'
     } catch (error) {
         console.log('error:' + error);
         return 'Something went wrong ...'
